@@ -10,16 +10,188 @@ widgets     : []            # {mathjax, quiz, bootstrap}
 mode        : selfcontained # {standalone, draft}
 ---
 
-## Read-And-Delete
+## Understanding Biodiversity of Communities with Thousands (upon Millions) of Species
 
-1. Edit YAML front matter
-2. Write using R Markdown
-3. Use an empty line followed by three dashes to separate slides!
+```{r test, echo=FALSE, fig.width=12,fig.height=4}
+library(ape)
+n.spec<-20
+set.seed(5)
+symb<-c(22,22,rep(23,5),rep(21,8),rep(24,5))
+colos<-c(rep("blue",2),"yellow",rep("red",2),rep("orange",2),"lightgreen",rep("green",2),rep("blue",3),rep("aquamarine4",2),"purple",rep("pink",3),"magenta")
+par(mar=c(0,0,0,0))
+plot(x=runif(n.spec,0,20),y=runif(n.spec,0,20),pch=rev(symb),bg=rev(colos),axes=F,xlab="",ylab="",cex=3)
+```
 
---- .class #id 
+* What is Diversity? 
 
-## Slide 2
+---
+
+## Understanding Biodiversity of Communities with Thousands (upon Millions) of Species
+
+```{r test1, echo=FALSE, fig.width=12,fig.height=4}
+library(ape)
+n.spec<-20
+set.seed(5)
+tree<-rcoal(n.spec)
+par(mar=c(0,0,0,0))
+xx<-plot(tree,show.tip.label=FALSE,use.edge.length = F, plot=F,direction="upwards")
+points(1:n.spec,rep(xx$y.lim[2]-0.7,n.spec),pch=rev(symb),bg=rev(colos),cex=3)
+```
+
+* What is Diversity?
+* Some species look (and act) more similar than others.
+
+---
+
+## Understanding Biodiversity of Communities with Thousands (upon Millions) of Species
+
+```{r test2, echo=FALSE, fig.width=12,fig.height=4}
+par(mar=c(0,0,0,0))
+xx<-plot(tree,show.tip.label=FALSE,use.edge.length = F, plot=T,direction="upwards")
+points(1:n.spec,rep(xx$y.lim[2]-0.7,n.spec),pch=rev(symb),bg=rev(colos),cex=3)
+```
+
+* What is Diversity? 
+* Some species look (and act) more similar than others.
+* Phylogenetic Diversity - Uses genetic data to estimate potential ecological similarity without measuring traits
+
+--- &twocol
+
+## Phylogenetic Diversity
+
+- Uses genetic data to estimate potential ecological similarity without measuring traits
+- For thousands of species, it is still very time consuming
+- How can we adapt this useful diversity measure to **_rapid_ biodiversity assessment**?
 
 
+*** =left
 
+### __Alignment-free Phylogeny__
+
+```{r AFP, cache=TRUE,fig.width=6,fig.height=1.5,echo=FALSE}
+par(oma=c(0,2,0,0),mar=c(0,8,0,0))
+cat("3 33",
+"Felis_atticus    ATTCACACACCCACCTAAAAGTTATCAGTCACT",
+"Felis_claude     ATTCGAAAAACACAACCACCTAAAAATACCACT",
+"Felis_remy       ATTGAAACACACCCACTACAATTATCAATCACT",
+file = "exdna.txt", sep = "\n")
+ex.dna <- read.dna("exdna.txt", format = "sequential")
+attr(ex.dna,"dimnames")[[1]]=c("Felis atticus","Felis claude","Felis remy")
+image(ex.dna,legend=FALSE,axes=F,cex.lab=2)
+```
+**Four types of alignment-free phylogeny methods**
+- *Word Based*, *Substring Based* 
+- *Information Theory Based*
+- *Graphical*
+
+
+*** =right
+
+### **Alignment Based Phylogeny**
+
+```{r AP, cache=TRUE,fig.width=6,fig.height=1.5,echo=FALSE}
+cat("3 40",
+"Felis_atticus    ATTC-----ACACACCCAC--CTAAAAGTTATCAGTCACT",
+"Felis_claude     ATTCGAAAAACACAACCAC--CTAAAAAT-----ACCACT",
+"Felis_remy       ATTG---AAACACACCCACTAC----AATTATCAATCACT",
+file = "exdna.txt", sep = "\n")
+ex.dna <- read.dna("exdna.txt", format = "sequential")
+attr(ex.dna,"dimnames")[[1]]=c("Felis atticus","Felis claude","Felis remy")
+par(oma=c(0,2,0,0),mar=c(0,8,0,0))
+image(ex.dna,legend=FALSE,axes=F,cex.lab=2)
+```
+**One alignment-based method**
+
+>- *MUSCLE + RAxML*
+
+
+--- &twocol
+
+## Alignment-free Phylogenetic Diversity?
+
+*** =left
+
+```{r treeanimate,fig.show='animate',interval=1/100,aniopts='controls,autoplay,loop',cache=TRUE,echo=FALSE,fig.width=7,fig.height=8}
+load(file="/home/din02g/NewSims/TestSet2/MPDdat.RData")
+par(bg = 'white')
+for (i in 1:1000) {
+  plot(fulltrees[[i]]$TRUEtree,edge.color="black",tip.color="black",edge.width=2,font=2)
+}
+```
+
+*** =right
+
+- 4000 simulations of phylogenies, genomes, and communities
+
+<---------------
+
+- Calculated Alignment-Free genetic distances and Alignment-based phylogenetic distances
+- How well did they capture the 'true'
+  1. Branch-length distribution?
+  2. Topology?
+
+--- &twocol
+
+## Results
+
+*** =left
+
+```{r Fig1aa, echo=FALSE, cache=TRUE,fig.height=8}
+par(mar=c(4,0,1,0),cex=0.9)
+library(ape)
+cortree<-read.tree(file="/home/din02g/Google Drive/AFD-manuscript/Figure1a.tre")
+
+cols1<-rep("black",length(cortree$tip.label))
+cols1[cortree$tip.label=="TRUEdist"]<-"darkred"
+
+cols2<-rep("black",length(treetree$tip.label))
+cols2[treetree$tip.label=="TRUEtree"]<-"darkred"
+
+plot(cortree, no.margin=F,font=2,main="Branch-length Correlation",tip.color=cols1)
+axisPhylo()
+```
+
+*** =right
+
+--- &twocol
+
+## Results
+
+*** =left
+
+```{r Fig1ab, echo=FALSE, cache=TRUE,fig.height=8}
+par(mar=c(4,0,1,0),cex=0.9)
+library(ape)
+cortree<-read.tree(file="/home/din02g/Google Drive/AFD-manuscript/Figure1a.tre")
+
+cols1<-rep("black",length(cortree$tip.label))
+cols1[cortree$tip.label=="TRUEdist"]<-"darkred"
+
+cols2<-rep("black",length(treetree$tip.label))
+cols2[treetree$tip.label=="TRUEtree"]<-"darkred"
+
+plot(cortree, no.margin=F,font=2,main="Branch-length Correlation",tip.color=cols1)
+axisPhylo()
+```
+
+*** =right
+```{r Fig1bb, echo=F, fig.height=8, cache=TRUE}
+library(ggplot2)
+library(grid)
+par(mar=c(1,0,0,0))
+load(file="/home/din02g/Google Drive/AFD-manuscript/Figure2a.RData")
+p + theme(plot.title = element_text(size=25, face="bold",hjust=0),plot.margin=unit(c(0,0,0,0),"lines")) 
+``` 
+
+---
+
+## Results
+
+```{r Fig3, echo=FALSE, cache=TRUE, fig.width=12}
+load(file="/home/din02g/Google Drive/AFD-manuscript/Figure4.RData")
+p + theme(axis.title.x = element_text(size=20, face="bold"),
+  axis.text.x  = element_text(vjust=0.5, size=16, face="bold"),
+  axis.title.y = element_text(size=20, face="bold"),
+  axis.text.y  = element_text(vjust=0.5, size=16, face="bold"))
+```
 
